@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { authAPI } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -16,17 +17,47 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
+    // Check for active session with backend first
+    const checkAuthStatus = async () => {
       try {
-        const parsedUser = JSON.parse(savedUser);
-        setUser(parsedUser);
-        setIsAuthenticated(true);
+        const sessionData = await authAPI.checkSession();
+        if (sessionData.authenticated) {
+          setUser(sessionData.user);
+          setIsAuthenticated(true);
+          // Also save to localStorage for persistence
+          localStorage.setItem('user', JSON.stringify(sessionData.user));
+        } else {
+          // Fallback to localStorage
+          const savedUser = localStorage.getItem('user');
+          if (savedUser) {
+            try {
+              const parsedUser = JSON.parse(savedUser);
+              setUser(parsedUser);
+              setIsAuthenticated(true);
+            } catch (error) {
+              localStorage.removeItem('user');
+            }
+          }
+        }
       } catch (error) {
-        localStorage.removeItem('user');
+        console.log('Session check failed, using localStorage fallback');
+        // Fallback to localStorage if session check fails
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+          try {
+            const parsedUser = JSON.parse(savedUser);
+            setUser(parsedUser);
+            setIsAuthenticated(true);
+          } catch (error) {
+            localStorage.removeItem('user');
+          }
+        }
+      } finally {
+        setLoading(false);
       }
-    }
-    setLoading(false);
+    };
+
+    checkAuthStatus();
   }, []);
 
   const login = (userData) => {

@@ -207,14 +207,32 @@ const EnhancedRecipeForm = ({ recipe, onSave, onCancel }) => {
     setError('');
 
     try {
+      // Simplify the data structure for backend compatibility
+      const simplifiedData = {
+        title: formData.title,
+        description: formData.description,
+        servings: formData.servings,
+        categories: formData.categories,
+        cuisineType: formData.cuisineType,
+        tags: formData.tags,
+        ingredients: formData.ingredients,
+        instructions: formData.content.instructions.map(inst => inst.description).join('\n\n'),
+        cookTime: formData.cookingInfo.cookTime,
+        prepTime: formData.cookingInfo.prepTime,
+        totalTime: formData.cookingInfo.totalTime,
+        difficulty: formData.cookingInfo.difficulty,
+        media: formData.media
+      };
+
       if (recipe) {
-        await recipeAPI.updateRecipe(recipe._id, formData);
+        await recipeAPI.updateRecipe(recipe._id, simplifiedData);
       } else {
-        await recipeAPI.createRecipe(formData);
+        await recipeAPI.createRecipe(simplifiedData);
       }
       onSave();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save recipe');
+      console.error('Recipe save error:', err);
+      setError(err.response?.data?.error || err.message || 'Failed to save recipe');
     } finally {
       setLoading(false);
     }

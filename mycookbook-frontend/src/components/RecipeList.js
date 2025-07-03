@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { recipeAPI } from '../services/api';
 import RecipeCard from './RecipeCard';
 import EnhancedRecipeForm from './EnhancedRecipeForm';
+import HeroSection from './HeroSection';
 
 const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);
@@ -59,8 +60,13 @@ const RecipeList = () => {
 
   if (loading) return <div className="loading">Loading recipes...</div>;
 
+  // Get featured recipe (latest or highest rated)
+  const featuredRecipe = recipes.length > 0 ? recipes[0] : null;
+
   return (
     <div className="recipe-list-container">
+      <HeroSection featuredRecipe={featuredRecipe} />
+      
       <div className="recipe-list-header">
         <h2>My Recipes</h2>
         <button onClick={handleAddRecipe} className="btn-add">

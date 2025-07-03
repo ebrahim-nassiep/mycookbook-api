@@ -25,6 +25,11 @@ export const authAPI = {
     const response = await api.post('/auth/logout');
     return response.data;
   },
+
+  checkSession: async () => {
+    const response = await api.get('/session');
+    return response.data;
+  },
 };
 
 export const recipeAPI = {
