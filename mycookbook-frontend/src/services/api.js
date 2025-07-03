@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api/v1';
+const API_BASE_URL = 'http://localhost:3001/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -17,7 +17,7 @@ export const authAPI = {
   },
 
   login: async (credentials) => {
-    const response = await api.post('/user/login', credentials);
+    const response = await api.post('/auth/login', credentials);
     return response.data;
   },
 

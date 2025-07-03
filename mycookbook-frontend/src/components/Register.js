@@ -3,6 +3,8 @@ import { authAPI } from '../services/api';
 
 const Register = ({ onRegister, switchToLogin }) => {
   const [formData, setFormData] = useState({
+    name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -30,8 +32,11 @@ const Register = ({ onRegister, switchToLogin }) => {
 
     try {
       const response = await authAPI.register({
+        name: formData.name,
+        username: formData.username,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        confirmedPwd: formData.confirmPassword
       });
       onRegister(response.user);
     } catch (err) {
@@ -45,6 +50,27 @@ const Register = ({ onRegister, switchToLogin }) => {
     <div className="auth-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+            minLength="3"
+          />
+        </div>
         <div className="form-group">
           <input
             type="email"

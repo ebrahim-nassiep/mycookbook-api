@@ -65,7 +65,7 @@ const validateRegistration = async (req, res, next) => {
         return;
     }
 
-    user = await dbClient.findUser('username', name);
+    user = await dbClient.findUser('username', username);
     if (user) {
         req.status = 400;
         req.error = 'This username is unavailable.';

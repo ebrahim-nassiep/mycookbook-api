@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { recipeAPI } from '../services/api';
 import RecipeCard from './RecipeCard';
-import RecipeForm from './RecipeForm';
+import EnhancedRecipeForm from './EnhancedRecipeForm';
 
 const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);
@@ -71,7 +71,7 @@ const RecipeList = () => {
       {error && <div className="error">{error}</div>}
 
       {showForm && (
-        <RecipeForm
+        <EnhancedRecipeForm
           recipe={editingRecipe}
           onSave={handleSaveRecipe}
           onCancel={handleCancelForm}
